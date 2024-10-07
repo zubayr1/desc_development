@@ -1,0 +1,50 @@
+/* Default for computers */
+.greetingsBody {
+    background: linear-gradient(to bottom,
+            #011720 0%,
+            #04242d 50%,
+            #08303b 100%);
+    height: 70vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8rem;
+    /* Large font for "DeSC" */
+    color: white;
+    /* Text color white */
+    position: relative;
+}
+
+/* Glowing edge effect with pseudo-element */
+.greetingsBody::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 0 0 15px 5px rgba(18, 96, 108, 0.6),
+        0 0 30px 10px rgba(18, 96, 108, 0.4),
+        0 0 45px 15px rgba(18, 96, 108, 0.3);
+    z-index: -1;
+    /* Keep glow behind the text */
+}
+
+/* For tablets (width between 600px and 1024px) */
+@media (max-width: 1024px) and (min-width: 600px) {
+    .greetingsBody {
+        height: 60vh;
+        font-size: 4rem;
+        /* Slightly smaller font for tablets */
+    }
+}
+
+/* For mobile devices (width below 600px) */
+@media (max-width: 600px) {
+    .greetingsBody {
+        height: 40vh;
+        font-size: 2rem;
+        /* Smaller font size for mobile */
+    }
+}
