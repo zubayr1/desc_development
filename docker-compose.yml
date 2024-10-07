@@ -1,0 +1,31 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./backend:/app
+    environment:
+      FLASK_ENV: development
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend/mvp
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000" 
+    volumes:
+      - ./frontend/mvp:/app
+    stdin_open: true  # Keep stdin open to fix npm start issue with Docker
+    tty: true         # Allocate a pseudo-TTY
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
