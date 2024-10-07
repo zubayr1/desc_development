@@ -3,17 +3,29 @@ import { Dropdown, Grid, Image } from "semantic-ui-react";
 
 import logo from "../assets/logo.svg";
 
-function Header({ selected, setSelected }) {
+function Header({ selected, setSelected, account }) {
   // Function to dynamically apply the color based on the selected section
   const getColor = (section) => (selected === section ? "#12606c" : "white");
 
-  const dropdownOptions = [
-    { key: "home", text: "Home", value: "home" },
-    { key: "dashboard", text: "Dashboard", value: "dashboard" },
-    { key: "papers", text: "Papers", value: "papers" },
-    { key: "roadmap", text: "Roadmap", value: "roadmap" },
-    { key: "connect", text: "Connect Wallet", value: "connect" },
-  ];
+  const dropdownOptions = account
+    ? [
+        { key: "home", text: "Home", value: "home" },
+        { key: "dashboard", text: "Dashboard", value: "dashboard" },
+        { key: "papers", text: "Papers", value: "papers" },
+        { key: "roadmap", text: "Roadmap", value: "roadmap" },
+        { key: "signout", text: "Sign Out", value: "signout" },
+      ]
+    : [
+        { key: "home", text: "Home", value: "home" },
+        { key: "dashboard", text: "Dashboard", value: "dashboard" },
+        { key: "papers", text: "Papers", value: "papers" },
+        { key: "roadmap", text: "Roadmap", value: "roadmap" },
+        {
+          key: "connectWallet",
+          text: "Connect Wallet",
+          value: "connectWallet",
+        },
+      ];
 
   const handleDropdownChange = (e, { value }) => setSelected(value);
 
@@ -87,16 +99,29 @@ function Header({ selected, setSelected }) {
               </Grid.Column>
 
               <Grid.Column width={3}>
-                <p
-                  style={{
-                    color: getColor("connect"),
-                    cursor: "pointer",
-                    fontSize: "1.0rem",
-                  }}
-                  onClick={() => setSelected("connectWallet")}
-                >
-                  Connect Wallet
-                </p>
+                {account !== null ? (
+                  <p
+                    style={{
+                      color: getColor("connect"),
+                      cursor: "pointer",
+                      fontSize: "1.0rem",
+                    }}
+                    onClick={() => setSelected("signout")} // Trigger signout when clicked
+                  >
+                    Sign Out
+                  </p>
+                ) : (
+                  <p
+                    style={{
+                      color: getColor("connect"),
+                      cursor: "pointer",
+                      fontSize: "1.0rem",
+                    }}
+                    onClick={() => setSelected("connectWallet")} // Trigger wallet connection when clicked
+                  >
+                    Connect Wallet
+                  </p>
+                )}
               </Grid.Column>
             </Grid>
           </Grid.Column>

@@ -3,7 +3,10 @@ import { Grid, Button } from "semantic-ui-react";
 
 import "./greetings.css";
 
-function Greetings() {
+function Greetings({ setSelected }) {
+  const handleClick = () => {
+    setSelected("dashboard");
+  };
   return (
     <div
       className="greetingsBody"
@@ -16,6 +19,7 @@ function Greetings() {
 
         <Grid.Row centered>
           <Button
+            onClick={handleClick}
             style={{
               background:
                 "linear-gradient(to bottom, #0a404b, #08262e 50%, #0a404b)",
