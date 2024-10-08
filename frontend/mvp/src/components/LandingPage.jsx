@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import Header from "./Header.jsx";
 import Greetings from "./Greetings.jsx";
 import Flowchart from "./Flowchart.jsx";
@@ -8,9 +8,27 @@ import About from "./About.jsx";
 import Footer from "./Footer.jsx";
 import Dashboard from "./Dashboard.jsx";
 
+import {
+  ModalHeader,
+  ModalDescription,
+  ModalContent,
+  ModalActions,
+  Button,
+  Modal,
+  Segment,
+} from "semantic-ui-react";
+
+import axios from "axios";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function LandingPage() {
   const [selectedSection, setSelectedSection] = useState("home");
   const [account, setAccount] = useState(null);
+  const [publicKey, setPublicKey] = useState(null);
+  const [privateKey, setPrivateKey] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
   // Refs for the sections
   const homeRef = useRef(null);
@@ -18,26 +36,56 @@ function LandingPage() {
   const roadmapRef = useRef(null);
   const dashboardRef = useRef(null);
 
+  const notify = (message) => toast(message);
+
   // Smooth scroll to the selected section
   const scrollToSection = (sectionRef) => {
     sectionRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   // Function to connect Phantom wallet
-  const connectWallet = async () => {
+  const connectWallet = useCallback(async () => {
     try {
       const { solana } = window;
       if (solana && solana.isPhantom) {
         const response = await solana.connect();
-        setAccount(response.publicKey.toString());
-        sessionStorage.setItem("phantomAccount", response.publicKey.toString());
+
+        const walletAddress = response.publicKey.toString();
+
+        try {
+          const result = await axios.post(
+            "http://127.0.0.1:5000/generate_keys",
+            {
+              wallet_address: walletAddress,
+            }
+          );
+
+          // Handle success response
+          if ("private_key" in result.data) {
+            const { private_key, public_key } = result.data;
+            setOpenModal(true);
+            setPublicKey(public_key);
+            setPrivateKey(private_key);
+          } else {
+            const { public_key, wallet_address } = result.data;
+
+            setPublicKey(public_key);
+            setAccount(wallet_address);
+          }
+
+          setAccount(walletAddress);
+          sessionStorage.setItem("phantomAccount", walletAddress);
+        } catch (error) {
+          // Handle errors during the axios call
+          notify("Error generating keys for wallet.");
+        }
       } else {
-        alert("Phantom Wallet not found! Please install it.");
+        notify("Phantom Wallet not found! Please install it.");
       }
     } catch (err) {
-      console.error("Error connecting to wallet:", err);
+      notify("Error connecting to wallet.");
     }
-  };
+  }, []);
 
   useEffect(() => {
     const storedAccount = sessionStorage.getItem("phantomAccount");
@@ -68,10 +116,43 @@ function LandingPage() {
       );
       setAccount(null);
     }
-  }, [selectedSection]);
+  }, [selectedSection, connectWallet]);
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      <ToastContainer />
+
+      <Modal onOpen={() => setOpenModal(true)} open={openModal}>
+        <ModalHeader>Your private key</ModalHeader>
+        <ModalContent>
+          <ModalDescription>
+            <p>Copy Your private key</p>
+            <Segment>{privateKey}</Segment>
+          </ModalDescription>
+        </ModalContent>
+        <ModalActions>
+          <Button
+            content="Done"
+            labelPosition="right"
+            icon="checkmark"
+            onClick={() => setOpenModal(false)}
+            positive
+          />
+        </ModalActions>
+      </Modal>
+
       <div ref={homeRef}>
         <Header
           selected={selectedSection}
@@ -87,7 +168,7 @@ function LandingPage() {
       <Flowchart />
 
       <div ref={dashboardRef}>
-        <Dashboard account={account} />
+        <Dashboard account={account} publicKey={publicKey} />
       </div>
 
       <div ref={papersRef}>

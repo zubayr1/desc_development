@@ -35,13 +35,15 @@ function Header({ selected, setSelected, account }) {
         backgroundColor: "#000c14",
         paddingLeft: "5%",
         paddingRight: "5%",
+        paddingTop: "1%",
+        paddingBottom: "1%",
         fontFamily: "'Orbitron', sans-serif",
       }}
     >
       <Grid verticalAlign="middle">
         <Grid.Row only="computer">
           <Grid.Column width={4}>
-            <Image src={logo} size="small" />
+            <Image src={logo} size="tiny" />
           </Grid.Column>
 
           <Grid.Column width={12}>
@@ -129,7 +131,7 @@ function Header({ selected, setSelected, account }) {
 
         <Grid.Row only="tablet mobile">
           <Grid.Column width={4}>
-            <Image src={logo} size="small" />
+            <Image src={logo} size="mini" />
           </Grid.Column>
 
           <Grid.Column width={12} textAlign="right" floated="right">
