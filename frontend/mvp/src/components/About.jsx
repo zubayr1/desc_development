@@ -35,16 +35,26 @@ function About() {
                 }}
               >
                 DeSC is a project focused on enabling secure, encrypted
-                communication and collaboration between parties. Its primary
+                communication and collaboration between parties. Its fundamental
                 feature is an encrypted messaging system, used for discussions
-                between initiators and acceptors in a collaboration process.
-                While the messaging aspect is centralized, the final agreements
-                are signed and stored on-chain, ensuring transparency and
-                immutability. DeSC also caches collaboration data for easy
+                between initiators and acceptors in a collaboration process. The
+                entire collaboration process is divided into multiple 'atomic
+                levels' with the help of Artificial Intelligence. A moderator
+                set from a moderator universe is selected where each subset of
+                moderators only overlooks one atomic level, thus ensuring the
+                privacy, transparency, and decentralised properties. This
+                technique is used in Blockchain first time ever according to our
+                knowledge. While the messaging aspect is centralized, the final
+                agreements are signed and stored on-chain, ensuring transparency
+                and immutability. DeSC also caches collaboration data for easy
                 access and reference during communication, creating a smooth
                 flow of information. The project aims to blend the convenience
                 of centralized communication with the security and trustlessness
-                of blockchain technology.
+                of blockchain technology. The myriad usecases include from
+                collaboration for tangible assets (e.g., supply chain) and
+                digital assets (e.g., transfering NFTs) to collaboration for
+                abstract assets (e.g., social media collaboration, freelance
+                technical product development collaboration, etc.).
               </p>
             </Grid.Row>
           </Grid>
@@ -79,16 +89,26 @@ function About() {
                 }}
               >
                 DeSC is a project focused on enabling secure, encrypted
-                communication and collaboration between parties. Its primary
+                communication and collaboration between parties. Its fundamental
                 feature is an encrypted messaging system, used for discussions
-                between initiators and acceptors in a collaboration process.
-                While the messaging aspect is centralized, the final agreements
-                are signed and stored on-chain, ensuring transparency and
-                immutability. DeSC also caches collaboration data for easy
+                between initiators and acceptors in a collaboration process. The
+                entire collaboration process is divided into multiple 'atomic
+                levels' with the help of Artificial Intelligence. A moderator
+                set from a moderator universe is selected where each subset of
+                moderators only overlooks one atomic level, thus ensuring the
+                privacy, transparency, and decentralised properties. This
+                technique is used in Blockchain first time ever according to our
+                knowledge. While the messaging aspect is centralized, the final
+                agreements are signed and stored on-chain, ensuring transparency
+                and immutability. DeSC also caches collaboration data for easy
                 access and reference during communication, creating a smooth
                 flow of information. The project aims to blend the convenience
                 of centralized communication with the security and trustlessness
-                of blockchain technology.
+                of blockchain technology. The myriad usecases include from
+                collaboration for tangible assets (e.g., supply chain) and
+                digital assets (e.g., transfering NFTs) to collaboration for
+                abstract assets (e.g., social media collaboration, freelance
+                technical product development collaboration, etc.).
               </p>
             </Grid.Row>
           </Grid>
