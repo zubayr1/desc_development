@@ -3,8 +3,11 @@ import sqlite3
 import os
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import serialization
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app)
 
 # Database initialization for 'users.db'
 DATABASE = 'users.db'
@@ -102,7 +105,7 @@ def generate_keys():
         return jsonify({'wallet_address': wallet_address, 'public_key': public_key})
 
     # Return the private key in the response
-    return jsonify({'private_key': private_key})
+    return jsonify({'private_key': private_key, 'public_key': public_key})
 
 
 
@@ -231,8 +234,74 @@ def get_collab_info():
         return jsonify({'error': str(e)}), 500
 
 
+# Route to fetch all collabs from both acceptor.db and initiator.db, with roles included
+@app.route('/get_all_collabs', methods=['GET'])
+def get_all_collabs():
+    """Fetch data from both 'initiator.db' and 'acceptor.db', add role columns, and merge the results."""
+    try:
+        # Fetch data from 'initiator.db'
+        conn_initiator = sqlite3.connect(INITIATOR_DB)
+        cursor_initiator = conn_initiator.cursor()
+        cursor_initiator.execute("SELECT collabId, wallet_address, public_key FROM collabs")
+        initiator_data = cursor_initiator.fetchall()
+        conn_initiator.close()
+
+        # Add the role 'initiator' to each row of initiator_data
+        initiator_data_with_role = [
+            {'collabId': row[0], 'wallet_address': row[1], 'public_key': row[2], 'role': 'initiator'}
+            for row in initiator_data
+        ]
+
+        # Fetch data from 'acceptor.db'
+        conn_acceptor = sqlite3.connect(ACCEPTOR_DB)
+        cursor_acceptor = conn_acceptor.cursor()
+        cursor_acceptor.execute("SELECT collabId, wallet_address, public_key FROM collabs")
+        acceptor_data = cursor_acceptor.fetchall()
+        conn_acceptor.close()
+
+        # Add the role 'acceptor' to each row of acceptor_data
+        acceptor_data_with_role = [
+            {'collabId': row[0], 'wallet_address': row[1], 'public_key': row[2], 'role': 'acceptor'}
+            for row in acceptor_data
+        ]
+
+        # Merge the two datasets
+        merged_data = initiator_data_with_role + acceptor_data_with_role
+        # Return the merged data as a JSON response
+        return jsonify(merged_data), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
+@app.route('/get_all_collabs_rolebased', methods=['GET'])
+def get_all_collabs_rolebased():
+    role = request.args.get('string')  # This should be 'acceptor' or 'initiator'
+
+    if not role:
+        return jsonify({'error': 'string (role) are required'}), 400
+
+    if role not in ['acceptor', 'initiator']:
+        return jsonify({'error': 'string must be either "acceptor" or "initiator"'}), 400
+    
+    if role == 'acceptor':
+        role_db = ACCEPTOR_DB
+    else:
+        role_db = INITIATOR_DB
+
+    try:
+        # Fetch data from 'initiator.db'
+        conn = sqlite3.connect(role_db)
+        cursor = conn.cursor()
+        cursor.execute("SELECT collabId, wallet_address, public_key FROM collabs")
+        data = cursor.fetchall()
+        conn.close()
+
+        # Return the merged data as a JSON response
+        return jsonify(data), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     # Initialize the databases on startup
@@ -243,4 +312,8 @@ if __name__ == '__main__':
     if not os.path.exists(INITIATOR_DB):
         init_collab_db(INITIATOR_DB)
 
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
+
+
+
+    
